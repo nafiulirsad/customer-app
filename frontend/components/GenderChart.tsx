@@ -9,7 +9,6 @@ import { ChartData } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-// Define expected structure of your gender stats
 type GenderStat = {
   _id: string;
   count: number;
