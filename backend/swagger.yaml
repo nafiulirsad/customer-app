@@ -20,31 +20,31 @@ paths:
       responses:
         '200':
           description: OK
-  /customers/gender-stats:
+  /gender-stats:
     get:
       summary: Gender statistics
       responses:
         '200':
           description: OK
-  /customers/digital-interest-stats:
+  /digital-interest-stats:
     get:
       summary: Digital Interest statistics
       responses:
         '200':
           description: OK
-  /customers/location-type-stats:
+  /location-type-stats:
     get:
       summary: Location Type statistics
       responses:
         '200':
           description: OK
-  /customers/device-brand-stats:
+  /device-brand-stats:
     get:
       summary: Device Brand statistics
       responses:
         '200':
           description: OK
-  /customers/age-distribution:
+  /age-distribution:
     get:
       summary: Age distribution statistics
       responses:
