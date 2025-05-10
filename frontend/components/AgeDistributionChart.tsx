@@ -1,54 +1,43 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { ChartData } from 'chart.js';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-import { getAgeDistribution } from '@/lib/api';
 import SkeletonChart from './SkeletonChart';
+import { getDeviceBrandStats } from '@/lib/api';
 
-// Define expected data structure for the age distribution
-type AgeDistributionResult = {
-  labels: string[];  // Labels for the X-axis (e.g., age groups)
-  counts: number[];  // Data points for each label
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
+// Define the expected data structure for the device brand stats
+type DeviceBrandStat = {
+  _id: string;
+  count: number;
 };
 
-export default function AgeDistributionChart() {
-  const [data, setData] = useState<ChartData<'line'> | null>(null);
+export default function DeviceBrandChart() {
+  const [data, setData] = useState<ChartData<'bar'> | null>(null);
 
   useEffect(() => {
-    getAgeDistribution()
-      .then((result: AgeDistributionResult) => {
+    getDeviceBrandStats()
+      .then((stats: DeviceBrandStat[]) => {
         setData({
-          labels: result.labels,
+          labels: stats.map((item) => item._id),
           datasets: [{
-            label: 'Jumlah Pelanggan',
-            data: result.counts,
-            borderColor: 'rgba(153, 102, 255, 1)',
-            fill: false,
-            tension: 0.3
+            label: 'Merek Perangkat',
+            data: stats.map((item) => item.count),
+            backgroundColor: 'rgba(255, 206, 86, 0.6)',
           }]
         });
       })
-      .catch(err => console.error('Error fetching age distribution:', err));
+      .catch(err => console.error('Error fetching device brand stats:', err));
   }, []);
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all duration-300">
-      <h2 className="text-xl font-semibold mb-4 text-center">📈 Distribusi Usia</h2>
+      <h2 className="text-xl font-semibold mb-4 text-center">Merek Perangkat</h2>
       <div className="w-full h-[400px] flex items-center justify-center">
-        {data ? <Line data={data} options={{ responsive: true }} /> : <SkeletonChart />}
+        {data ? <Bar data={data} options={{ responsive: true }} /> : <SkeletonChart />}
       </div>
     </div>
   );
