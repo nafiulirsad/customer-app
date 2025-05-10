@@ -3,22 +3,28 @@
 import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { ChartData } from 'chart.js';
 import SkeletonChart from './SkeletonChart';
 import { getDeviceBrandStats } from '@/lib/api';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
+type DeviceBrandStat = {
+  _id: string;
+  count: number;
+};
+
 export default function DeviceBrandChart() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<ChartData<'bar'> | null>(null);
 
   useEffect(() => {
     getDeviceBrandStats()
-      .then(stats => {
+      .then((stats: DeviceBrandStat[]) => {
         setData({
-          labels: stats.map((item: any) => item._id),
+          labels: stats.map((item) => item._id),
           datasets: [{
             label: 'Merek Perangkat',
-            data: stats.map((item: any) => item.count),
+            data: stats.map((item) => item.count),
             backgroundColor: 'rgba(255, 206, 86, 0.6)',
           }]
         });
