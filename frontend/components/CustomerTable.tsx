@@ -3,14 +3,25 @@
 import { useEffect, useState } from 'react';
 import { getCustomers } from '@/lib/api';
 
+// Define the Customer type
+interface Customer {
+  _id: string;
+  name: string;
+  age: number;
+  gender: string;
+  locationType?: string;
+}
+
 export default function CustomerTable() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<Customer[]>([]); // Use the Customer type
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    getCustomers(page).then(setData).finally(() => setLoading(false));
+    getCustomers(page)
+      .then((customers: Customer[]) => setData(customers)) // Type the response from getCustomers
+      .finally(() => setLoading(false));
   }, [page]);
 
   if (loading && page === 1) return <SkeletonTable />;
@@ -29,7 +40,7 @@ export default function CustomerTable() {
           </thead>
           <tbody>
             {data.length > 0 ? (
-              data.map((cust: any) => (
+              data.map((cust) => (
                 <tr key={cust._id} className="border-b hover:bg-gray-50 transition-colors">
                   <td className="py-3 px-4">{cust.name}</td>
                   <td className="py-3 px-4">{cust.age}</td>
@@ -49,7 +60,7 @@ export default function CustomerTable() {
 
         <div className="flex justify-between items-center mt-4">
           <button
-            onClick={() => setPage(p => Math.max(1, p - 1))}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
             className="px-4 py-2 bg-indigo-600 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
@@ -57,7 +68,7 @@ export default function CustomerTable() {
           </button>
           <span>Halaman: {page}</span>
           <button
-            onClick={() => setPage(p => p + 1)}
+            onClick={() => setPage((p) => p + 1)}
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
           >
             Next
