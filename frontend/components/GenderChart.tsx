@@ -8,6 +8,8 @@ import { getGenderStats } from '@/lib/api';
 import { ChartData } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
+
+// Define expected structure of your gender stats
 type GenderStat = {
   _id: string;
   count: number;
@@ -21,14 +23,16 @@ export default function GenderChart() {
       .then((stats: GenderStat[]) => {
         setData({
           labels: stats.map((item) => item._id),
-          datasets: [{
-            label: 'Jumlah',
-            data: stats.map((item: any) => item.count),
-            backgroundColor: ['rgba(75, 192, 192, 0.7)', 'rgba(255, 99, 132, 0.7)'],
-          }]
+          datasets: [
+            {
+              label: 'Jumlah',
+              data: stats.map((item) => item.count),
+              backgroundColor: ['rgba(75, 192, 192, 0.7)', 'rgba(255, 99, 132, 0.7)'],
+            },
+          ],
         });
       })
-      .catch(err => console.error('Error fetching gender stats:', err));
+      .catch((err) => console.error('Error fetching gender stats:', err));
   }, []);
 
   return (
