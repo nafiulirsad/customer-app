@@ -5,17 +5,22 @@ import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import SkeletonChart from './SkeletonChart';
 import { getGenderStats } from '@/lib/api';
+import { ChartData } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
+type GenderStat = {
+  _id: string;
+  count: number;
+};
 
 export default function GenderChart() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<ChartData<'pie'> | null>(null);
 
   useEffect(() => {
     getGenderStats()
-      .then(stats => {
+      .then((stats: GenderStat[]) => {
         setData({
-          labels: stats.map((item: any) => item._id),
+          labels: stats.map((item) => item._id),
           datasets: [{
             label: 'Jumlah',
             data: stats.map((item: any) => item.count),
