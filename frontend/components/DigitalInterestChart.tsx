@@ -3,22 +3,28 @@
 import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { ChartData } from 'chart.js';
 import SkeletonChart from './SkeletonChart';
 import { getDigitalInterestStats } from '@/lib/api';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
+type DigitalInterestStat = {
+  _id: string;
+  count: number;
+};
+
 export default function DigitalInterestChart() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<ChartData<'bar'> | null>(null);
 
   useEffect(() => {
     getDigitalInterestStats()
-      .then(stats => {
+      .then((stats: DigitalInterestStat[]) => {
         setData({
-          labels: stats.map((item: any) => item._id),
+          labels: stats.map((item) => item._id),
           datasets: [{
             label: 'Minat Digital',
-            data: stats.map((item: any) => item.count),
+            data: stats.map((item) => item.count),
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
           }]
         });
