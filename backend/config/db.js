@@ -15,7 +15,11 @@ const connectDB = async () => {
     }
 
     // Avoid reconnecting if already connected
-    if (!connectedClient) {
+    if (!connectedClient || !isConnected(connectedClient)) {
+      if (connectedClient) {
+        console.log('⚠️ Existing connection is stale. Reconnecting...');
+      }
+
       await client.connect();
       // Ping to confirm connection
       await client.db("admin").command({ ping: 1 });
@@ -30,5 +34,17 @@ const connectDB = async () => {
   }
 };
 
-// Optional: export getClient for reuse in other modules
-module.exports = { connectDB, getClient: () => connectedClient };
+// Helper function to check if client is connected
+const isConnected = (clientInstance) => {
+  return clientInstance && clientInstance.topology && clientInstance.topology.isConnected();
+};
+
+// getClient now ensures connection is valid
+const getClient = async () => {
+  if (!connectedClient || !isConnected(connectedClient)) {
+    await connectDB(); // auto-reconnect
+  }
+  return connectedClient;
+};
+
+module.exports = { connectDB, getClient };
