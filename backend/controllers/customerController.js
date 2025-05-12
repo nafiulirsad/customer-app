@@ -9,7 +9,7 @@ let _dbInstance = null;
 // Lazily get the database instance using existing client
 async function getDb() {
   if (!_dbInstance) {
-    const client = getClient();
+    const client = await getClient();
     if (!client) {
       throw new Error('MongoDB client not initialized. Call connectDB first.');
     }
